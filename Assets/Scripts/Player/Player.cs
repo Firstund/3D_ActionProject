@@ -2,22 +2,100 @@ using UnityEngine;
 
 namespace Player
 {
+    /// <summary>
+    /// 플레이어의 상태 정의
+    /// </summary>
     public enum PlayerState
     {
         Idle,
-        Walk,
-        Run,
-        Attack,
-        Jump,
 
+        Move,
+        Jump,
+        Sprint,
+
+        Attack,
+        MoveAttack,
+        JumpAttack,
+        SprintAttack,
     }
+
+    /// <summary>
+    /// 플레이어 스탯 정의
+    /// </summary>
+    public class PlayerStats
+    {
+        public int hp = 10;
+
+        public int ap = 2;
+        public int dp = 2;
+
+        public int speed = 1;
+        public int sprintSpeed = 2;
+        public int jumpPower = 1;
+    }
+
     public class Player : MonoBehaviour
     {
-        private PlayerState currentState = default(PlayerState); // 플레이어의 현재 상태
-
-        void Start()
+        private PlayerStats playerStats = new();
+        public PlayerStats PlayerStats
         {
-            
+            get
+            {
+                return playerStats;
+            }
+        }
+
+        private PlayerState currentState = default(PlayerState); // 플레이어의 현재 상태
+        public PlayerState CurrentState
+        {
+            get
+            {
+                return currentState;
+            }
+
+            set
+            {
+                currentState = value;
+            }
+        }
+
+        /// <summary>
+        /// PlayerMove 스크립트
+        /// </summary>
+        private PlayerMove playerMove = null;
+        public PlayerMove PlayerMove
+        {
+            get
+            {
+                if(playerMove == null)
+                {
+                    playerMove = GetComponent<PlayerMove>();
+                }
+
+                return playerMove;
+            }
+        }
+
+        /// <summary>
+        /// PlayerInput 스크립트
+        /// </summary>
+        private PlayerInput playerInput = null;
+        public PlayerInput PlayerInput
+        {
+            get
+            {
+                if(playerInput == null)
+                {
+                    playerInput = GetComponent<PlayerInput>();
+                }
+
+                return playerInput;
+            }
+        }
+
+        private void Awake()
+        {
+            GameManager.Instance.CurrentPlayer = this;
         }
 
         void Update()
