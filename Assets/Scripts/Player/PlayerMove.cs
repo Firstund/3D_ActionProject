@@ -36,10 +36,13 @@ namespace Player
 
         void Update()
         {
-            if (player.GetCurrentState() == PlayerState.Move || player.GetCurrentState() == PlayerState.Sprint)
+            if (player.GetCurrentState() == PlayerState.Move || player.GetCurrentState() == PlayerState.Sprint || player.GetCurrentState() == PlayerState.Jump ||
+                player.GetCurrentState() == PlayerState.MoveAttack || player.GetCurrentState() == PlayerState.SprintAttack || player.GetCurrentState() == PlayerState.JumpAttack)
             {
                 CheckMove();
+
                 Move();
+                Jump();
             }
         }
 
@@ -87,6 +90,14 @@ namespace Player
             }
 
             transform.position = currentPosition;
+        }
+
+        /// <summary>
+        /// 점프를 담당하는 함수
+        /// </summary>
+        private void Jump()
+        {
+
         }
     }
 }

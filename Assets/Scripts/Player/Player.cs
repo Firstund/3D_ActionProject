@@ -77,6 +77,23 @@ namespace Player
         }
 
         /// <summary>
+        /// PlayerAttack 스크립트
+        /// </summary>
+        private PlayerAttack playerAttack = null;
+        public PlayerAttack PlayerAttack
+        {
+            get
+            {
+                if(playerAttack == null)
+                {
+                    playerAttack = GetComponent<PlayerAttack>();
+                }
+
+                return playerAttack;
+            }
+        }
+
+        /// <summary>
         /// PlayerInput 스크립트
         /// </summary>
         private PlayerInput playerInput = null;
@@ -93,9 +110,20 @@ namespace Player
             }
         }
 
+        private Rigidbody playerRigidbody = null;
+        public Rigidbody PlayerRigidbody
+        {
+            get
+            {
+                return playerRigidbody;
+            }
+        }
+
         private void Awake()
         {
             GameManager.Instance.CurrentPlayer = this;
+
+            playerRigidbody = GetComponent<Rigidbody>();
         }
 
         void Update()

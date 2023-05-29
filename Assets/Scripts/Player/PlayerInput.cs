@@ -149,6 +149,24 @@ namespace Player
         /// </summary>
         private void CheckState()
         {
+            if(player.GetCurrentState() == PlayerState.Attack || player.GetCurrentState() == PlayerState.MoveAttack ||
+             player.GetCurrentState() == PlayerState.JumpAttack || player.GetCurrentState() == PlayerState.SprintAttack)
+            {
+                return;
+            }
+
+            if(player.GetCurrentState() == PlayerState.Jump)
+            {
+                if(GetKeyDict(PlayerKey.Attack))
+                {
+                    player.SetCurrentState(PlayerState.JumpAttack);
+                }
+
+                return;
+            }
+
+/////////////////////////////////////////////////////////////////////////////////////
+
             player.SetCurrentState(PlayerState.Idle);
 
             if(GetKeyDict(PlayerKey.MoveForward) || GetKeyDict(PlayerKey.MoveLeft) || GetKeyDict(PlayerKey.MoveRight) || GetKeyDict(PlayerKey.MoveBack))
@@ -179,10 +197,6 @@ namespace Player
                 {
                     player.SetCurrentState(PlayerState.MoveAttack);
                 } 
-                else if(player.GetCurrentState() == PlayerState.Jump)
-                {
-                    player.SetCurrentState(PlayerState.JumpAttack);
-                }
                 else if(player.GetCurrentState() == PlayerState.Sprint)
                 {
                     player.SetCurrentState(PlayerState.SprintAttack);
