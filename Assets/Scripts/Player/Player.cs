@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Player
@@ -22,6 +23,7 @@ namespace Player
     /// <summary>
     /// 플레이어 스탯 정의
     /// </summary>
+    [Serializable]
     public class PlayerStats
     {
         public int hp = 10;
@@ -36,6 +38,17 @@ namespace Player
 
     public class Player : MonoBehaviour
     {
+        [SerializeField]
+        private LayerMask floorLayerMask = default(LayerMask);
+        public LayerMask FloorLayerMask
+        {
+            get
+            {
+                return floorLayerMask;
+            }
+        }
+
+        [SerializeField]
         private PlayerStats playerStats = new();
         public PlayerStats PlayerStats
         {
