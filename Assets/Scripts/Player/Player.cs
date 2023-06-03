@@ -86,11 +86,11 @@ namespace Player
         }
 
         /// <summary>
-        /// 플레이어의 몸체를 담당하는 오브젝트
+        /// 플레이어의 몸체를 담당하는 오브젝트가 가지고있는 스크립트
         /// </summary>
         [SerializeField]
-        private GameObject playerBody = null;
-        public GameObject PlayerBody
+        private PlayerBody playerBody = null;
+        public PlayerBody PlayerBody
         {
             get
             {
