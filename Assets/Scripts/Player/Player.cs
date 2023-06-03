@@ -73,6 +73,32 @@ namespace Player
         }
 
         /// <summary>
+        /// 이 Player오브젝트의 PlayerCamera스크립트
+        /// </summary>
+        [SerializeField]
+        private PlayerCamera playerCamera = null;
+        public PlayerCamera PlayerCamera
+        {
+            get
+            {
+                return playerCamera;
+            }
+        }
+
+        /// <summary>
+        /// 플레이어의 몸체를 담당하는 오브젝트
+        /// </summary>
+        [SerializeField]
+        private GameObject playerBody = null;
+        public GameObject PlayerBody
+        {
+            get
+            {
+                return playerBody;
+            }
+        }
+
+        /// <summary>
         /// PlayerMove 스크립트
         /// </summary>
         private PlayerMove playerMove = null;
@@ -141,7 +167,13 @@ namespace Player
 
         void Update()
         {
+            SetPlayerRot();
+        }
 
+        private void SetPlayerRot()
+        {
+            transform.LookAt(playerCamera.playerForwardVector + transform.position);
+            playerBody.transform.rotation = transform.rotation;
         }
 
         /// <summary>

@@ -47,6 +47,26 @@ namespace Player
         private KeyCode attackKey = default(KeyCode);
         #endregion
 
+        #region 마우스에 관한 변수
+        private float xMove = 0f;
+        public float XMove
+        {
+            get
+            {
+                return xMove;
+            }
+        }
+
+        private float yMove = 0f;
+        public float YMove
+        {
+            get
+            {
+                return yMove;
+            }
+        }
+        #endregion
+
         private Dictionary<PlayerKey, bool> keyDict = new(); // 현재 키의 상태를 담는 Dictionary
 
         private void Awake()
@@ -56,10 +76,21 @@ namespace Player
 
         void Update()
         {
+            CheckMouseMove();
+
             CheckMoveInput();
             CheckAttackInput();
 
             CheckState();
+        }
+
+        /// <summary>
+        /// 마우스의 이동량을 누적해주는 함수
+        /// </summary>
+        private void CheckMouseMove()
+        {
+            xMove += Input.GetAxis("Mouse X");
+            yMove -= Input.GetAxis("Mouse Y"); 
         }
 
         /// <summary>
@@ -149,15 +180,15 @@ namespace Player
         /// </summary>
         private void CheckState()
         {
-            if(player.GetCurrentState() == PlayerState.Attack || player.GetCurrentState() == PlayerState.MoveAttack ||
+            if (player.GetCurrentState() == PlayerState.Attack || player.GetCurrentState() == PlayerState.MoveAttack ||
              player.GetCurrentState() == PlayerState.JumpAttack || player.GetCurrentState() == PlayerState.SprintAttack)
             {
                 return;
             }
 
-            if(player.GetCurrentState() == PlayerState.Jump)
+            if (player.GetCurrentState() == PlayerState.Jump)
             {
-                if(GetKeyDict(PlayerKey.Attack))
+                if (GetKeyDict(PlayerKey.Attack))
                 {
                     player.SetCurrentState(PlayerState.JumpAttack);
                 }
@@ -165,39 +196,39 @@ namespace Player
                 return;
             }
 
-/////////////////////////////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////////////////////////
 
             player.SetCurrentState(PlayerState.Idle);
 
-            if(GetKeyDict(PlayerKey.MoveForward) || GetKeyDict(PlayerKey.MoveLeft) || GetKeyDict(PlayerKey.MoveRight) || GetKeyDict(PlayerKey.MoveBack))
+            if (GetKeyDict(PlayerKey.MoveForward) || GetKeyDict(PlayerKey.MoveLeft) || GetKeyDict(PlayerKey.MoveRight) || GetKeyDict(PlayerKey.MoveBack))
             {
                 player.SetCurrentState(PlayerState.Move);
             }
 
-            if(GetKeyDict(PlayerKey.Sprint))
+            if (GetKeyDict(PlayerKey.Sprint))
             {
-                if(player.GetCurrentState() == PlayerState.Move)
+                if (player.GetCurrentState() == PlayerState.Move)
                 {
                     player.SetCurrentState(PlayerState.Sprint);
                 }
             }
 
-            if(GetKeyDict(PlayerKey.Jump))
+            if (GetKeyDict(PlayerKey.Jump))
             {
                 player.SetCurrentState(PlayerState.Jump);
             }
 
-            if(GetKeyDict(PlayerKey.Attack))
+            if (GetKeyDict(PlayerKey.Attack))
             {
-                if(player.GetCurrentState() == PlayerState.Idle)
+                if (player.GetCurrentState() == PlayerState.Idle)
                 {
                     player.SetCurrentState(PlayerState.Attack);
                 }
-                else if(player.GetCurrentState() == PlayerState.Move)
+                else if (player.GetCurrentState() == PlayerState.Move)
                 {
                     player.SetCurrentState(PlayerState.MoveAttack);
-                } 
-                else if(player.GetCurrentState() == PlayerState.Sprint)
+                }
+                else if (player.GetCurrentState() == PlayerState.Sprint)
                 {
                     player.SetCurrentState(PlayerState.SprintAttack);
                 }
