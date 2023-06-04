@@ -46,8 +46,6 @@ namespace Player
 
         void Update()
         {
-            Test();
-
             CheckCameraPos();
             CheckFollowPosOffsetZ();
 
@@ -92,13 +90,6 @@ namespace Player
         {
             Vector3 targetPos = GameManager.Instance.CurrentPlayer.transform.position - cameraPos;
             transform.position = targetPos;
-        }
-
-        private void Test(){
-
-            // GameManager.Instance.CurrentPlayer.transform.LookAt(Vector3.Cross(cinemachineVirtualCamera.transform.right, Vector3.up) + GameManager.Instance.CurrentPlayer.transform.position);
-            // Debug.Log(Vector3.Cross(cinemachineVirtualCamera.transform.right, Vector3.up));
-            Debug.DrawRay(cinemachineVirtualCamera.transform.position, (Vector3.Cross(cinemachineVirtualCamera.transform.right, Vector3.up)) * 10f, Color.black, Time.deltaTime);
         }
     }
 }

@@ -158,6 +158,7 @@ namespace Player
                     {
                         if (!animator.GetBool("Move"))
                         {
+                            ResetParams();
                             animator.Play("WALK00_F");
                             animator.SetBool("Move", true);
                         }
@@ -168,7 +169,8 @@ namespace Player
                     {
                         if (!animator.GetBool("Sprint"))
                         {
-                            animator.Play("WALK00_F");
+                            ResetParams();
+                            animator.Play("RUN00_F");
                             animator.SetBool("Sprint", true);
                         }
                     }
