@@ -53,7 +53,7 @@ namespace Player
                 player.GetCurrentState() == PlayerState.MoveAttack || player.GetCurrentState() == PlayerState.SprintAttack || player.GetCurrentState() == PlayerState.JumpAttack)
             {
                 CheckMove();
-                CheckJump();
+                CheckInAir();
 
                 Move();
                 Jump();
@@ -65,11 +65,11 @@ namespace Player
         /// </summary>
         private void CheckJumpDelay()
         {
-            if(jumpDelayTimerStart && jumpDelayTimer > 0f)
+            if (jumpDelayTimerStart && jumpDelayTimer > 0f)
             {
                 jumpDelayTimer -= Time.deltaTime;
 
-                if(jumpDelayTimer <= 0f)
+                if (jumpDelayTimer <= 0f)
                 {
                     jumpDelayTimerStart = false;
                 }
@@ -106,18 +106,18 @@ namespace Player
         /// <summary>
         /// 점프를 체크하는 함수
         /// </summary>
-        private void CheckJump()
+        private void CheckInAir()
         {
-            if(isJump)
+            Ray ray = default(Ray);
+
+            ray.origin = transform.position;
+            ray.direction = Vector3.down;
+
+            if (isJump)
             {
-                Ray ray = default(Ray);
-
-                ray.origin = transform.position;
-                ray.direction = Vector3.down;
-
                 Debug.DrawRay(ray.origin, ray.direction * jumpRayDistance, Color.red, 10f);
 
-                if(Physics.Raycast(ray.origin, ray.direction, jumpRayDistance, player.FloorLayerMask))
+                if (Physics.Raycast(ray.origin, ray.direction, jumpRayDistance, player.FloorLayerMask))
                 {
                     isJump = false;
 
@@ -150,14 +150,11 @@ namespace Player
         /// </summary>
         private void Jump()
         {
-            if((player.GetCurrentState() == PlayerState.Jump || player.GetCurrentState() == PlayerState.JumpAttack) && !isJump && !jumpDelayTimerStart)
+            if ((player.GetCurrentState() == PlayerState.Jump || player.GetCurrentState() == PlayerState.JumpAttack) && !isJump && !jumpDelayTimerStart)
             {
-                player.PlayerRigidbody.velocity = Vector3.zero;
-                player.PlayerRigidbody.AddForce(Vector3.up * player.PlayerStats.jumpPower, ForceMode.Impulse);
-
                 jumpDelayTimer = jumpDelay;
-
                 jumpDelayTimerStart = true;
+
                 isJump = true;
             }
         }

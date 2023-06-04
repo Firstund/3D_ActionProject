@@ -7718,6 +7718,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jumpDelay: 0.1
+  jumpAddForceTime: 0.2
   jumpRayDistance: 0.5
 --- !u!114 &1414951276
 MonoBehaviour:
@@ -7757,9 +7758,9 @@ MonoBehaviour:
     hp: 10
     ap: 2
     dp: 2
-    speed: 1
-    sprintSpeed: 2
-    jumpPower: 5
+    speed: 2
+    sprintSpeed: 8
+    jumpPower: 10
   playerCamera: {fileID: 1563443873}
   playerBody: {fileID: 603431013}
 --- !u!114 &1414951278

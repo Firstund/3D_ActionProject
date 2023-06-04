@@ -18,6 +18,14 @@ namespace Player
         [SerializeField]
         private float quatSpeed = 2f;
 
+        [SerializeField]
+        private float jumpAddForceTime = 0.1f;
+        private float jumpAddForceTimer = 0f;
+
+        private bool jumpAddForceTimerStart = false;
+
+        private bool animPlayed = false;
+
         void Awake()
         {
             animator = GetComponent<Animator>();
@@ -25,10 +33,17 @@ namespace Player
 
         void Update()
         {
+            CheckJumpAddForceTimer();
+
+            animPlayed = false;
+
             CheckMoveDirection();
             LerpQuat();
 
             CheckMoveAnime();
+            CheckJumpAnime();
+
+            CheckGoToWait();
         }
 
         private void CheckMoveDirection()
@@ -139,17 +154,24 @@ namespace Player
             transform.localRotation = Quaternion.Euler(0f, curQuat, 0f);
         }
 
+        private void CheckGoToWait()
+        {
+            if (!animPlayed)
+            {
+                animator.SetTrigger("GoToWait");
+            }
+        }
+
         private void CheckMoveAnime()
         {
             if (!(currentPlayer.CurrentState == PlayerState.Move || currentPlayer.CurrentState == PlayerState.Sprint))
             {
-                ResetParams();
-
-                animator.SetTrigger("GoToWait");
+                ResetMoveParams();
 
                 return;
             }
 
+            animPlayed = true;
             animator.ResetTrigger("GoToWait");
 
             switch (currentPlayer.CurrentState)
@@ -158,7 +180,7 @@ namespace Player
                     {
                         if (!animator.GetBool("Move"))
                         {
-                            ResetParams();
+                            ResetMoveParams();
                             animator.Play("WALK00_F");
                             animator.SetBool("Move", true);
                         }
@@ -169,7 +191,7 @@ namespace Player
                     {
                         if (!animator.GetBool("Sprint"))
                         {
-                            ResetParams();
+                            ResetMoveParams();
                             animator.Play("RUN00_F");
                             animator.SetBool("Sprint", true);
                         }
@@ -178,7 +200,70 @@ namespace Player
             }
         }
 
-        private void ResetParams()
+        private void CheckJumpAnime()
+        {
+            if (!(currentPlayer.CurrentState == PlayerState.Jump))
+            {
+                ResetJumpParams();
+
+                return;
+            }
+
+            animPlayed = true;
+            animator.ResetTrigger("GoToWait");
+
+            switch (currentPlayer.CurrentState)
+            {
+                case PlayerState.Jump:
+                    {
+                        if (!animator.GetBool("Jump"))
+                        {
+                            ResetJumpParams();
+                            animator.Play("JumpStart");
+
+                            jumpAddForceTimer = jumpAddForceTime;
+                            jumpAddForceTimerStart = true;
+
+                            animator.SetBool("Jump", true);
+                        }
+                    }
+                    break;
+            }
+
+            // animator.playbackTime;
+        }
+
+        private void JumpAddForce()
+        {
+            currentPlayer.PlayerRigidbody.velocity = Vector3.zero;
+            currentPlayer.PlayerRigidbody.AddForce(Vector3.up * currentPlayer.PlayerStats.jumpPower, ForceMode.Impulse);
+        }
+
+        /// <summary>
+        /// JumpAddForceTimer를 체크해줌
+        /// </summary>
+        private void CheckJumpAddForceTimer()
+        {
+            if(jumpAddForceTimerStart && jumpAddForceTimer > 0f)
+            {
+                jumpAddForceTimer -= Time.deltaTime;
+
+                if(jumpAddForceTimer <= 0f)
+                {
+                    animator.SetTrigger("JumpInAir");
+                    JumpAddForce();
+
+                    jumpAddForceTimerStart = false;
+                }
+            }
+        }
+
+        private void ResetJumpParams()
+        {
+            animator.SetBool("Jump", false);
+        }
+
+        private void ResetMoveParams()
         {
             animator.SetBool("Move", false);
             animator.SetBool("Sprint", false);
