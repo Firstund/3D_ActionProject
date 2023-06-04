@@ -73,17 +73,27 @@ namespace Player
                 return;
             }
 
+            animator.ResetTrigger("GoToWait");
+
             switch(currentPlayer.CurrentState)
             {
                 case PlayerState.Move:
                 {
-                    animator.SetBool("Move", true);
+                    if(!animator.GetBool("Move"))
+                    {
+                        animator.Play("WALK00_F");
+                        animator.SetBool("Move", true);
+                    }
                 }
                 break;
 
                 case PlayerState.Sprint:
                 {
-                    animator.SetBool("Sprint", true);
+                    if(!animator.GetBool("Sprint"))
+                    {
+                        animator.Play("WALK00_F");
+                        animator.SetBool("Sprint", true);
+                    }
                 }
                 break;
             }

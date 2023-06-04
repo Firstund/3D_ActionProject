@@ -7760,7 +7760,7 @@ MonoBehaviour:
     sprintSpeed: 2
     jumpPower: 5
   playerCamera: {fileID: 1563443873}
-  playerBody: {fileID: 593941221}
+  playerBody: {fileID: 603431013}
 --- !u!114 &1414951278
 MonoBehaviour:
   m_ObjectHideFlags: 0
