@@ -63,7 +63,7 @@ namespace Player
         {
             float offsetZ = cameraDistance;
 
-            offsetZ += Input.mouseScrollDelta.y * posOffsetZSpeed;
+            offsetZ -= Input.mouseScrollDelta.y * posOffsetZSpeed;
 
             if (-offsetZ < minPosOffsetZ)
             {

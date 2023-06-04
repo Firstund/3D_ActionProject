@@ -12,6 +12,12 @@ namespace Player
         [SerializeField]
         private Animator animator = null;
 
+        private float targetQuat = 0f;
+        private float curQuat = 0f;
+
+        [SerializeField]
+        private float quatSpeed = 2f;
+
         void Awake()
         {
             animator = GetComponent<Animator>();
@@ -20,13 +26,15 @@ namespace Player
         void Update()
         {
             CheckMoveDirection();
+            LerpQuat();
 
             CheckMoveAnime();
         }
 
         private void CheckMoveDirection()
         {
-            if(playerInput.GetKeyDict(PlayerKey.MoveForward))
+            #region SetBool
+            if (playerInput.GetKeyDict(PlayerKey.MoveForward))
             {
                 animator.SetBool("Forward", true);
             }
@@ -35,7 +43,7 @@ namespace Player
                 animator.SetBool("Forward", false);
             }
 
-            if(playerInput.GetKeyDict(PlayerKey.MoveLeft)) 
+            if (playerInput.GetKeyDict(PlayerKey.MoveLeft))
             {
                 animator.SetBool("Left", true);
             }
@@ -44,7 +52,7 @@ namespace Player
                 animator.SetBool("Left", false);
             }
 
-            if(playerInput.GetKeyDict(PlayerKey.MoveRight))
+            if (playerInput.GetKeyDict(PlayerKey.MoveRight))
             {
                 animator.SetBool("Right", true);
             }
@@ -53,18 +61,87 @@ namespace Player
                 animator.SetBool("Right", false);
             }
 
-            if(playerInput.GetKeyDict(PlayerKey.MoveBack))
+            if (playerInput.GetKeyDict(PlayerKey.MoveBack))
             {
                 animator.SetBool("Backward", true);
             }
             else
             {
-               animator.SetBool("Backward", false); 
+                animator.SetBool("Backward", false);
+            }
+            #endregion
+
+            bool quatChanged = false;
+            if (!animator.GetBool("Forward") && animator.GetBool("Left"))
+            {
+                // transform.localRotation = Quaternion.Euler(0f, -90f, 0f);
+                if (targetQuat < 0f)
+                {
+                    targetQuat = -90f;
+                }
+                else
+                {
+                    targetQuat = 270f;
+                }
+
+                quatChanged = true;
+            }
+            else if (!quatChanged)
+            {
+                targetQuat = 0f;
+                // transform.localRotation = Quaternion.identity;
+            }
+
+            if (!animator.GetBool("Forward") && animator.GetBool("Right"))
+            {
+                // transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
+                if (targetQuat < 0f)
+                {
+                    targetQuat = -270f;
+                }
+                else
+                {
+                    targetQuat = 90f;
+                }
+
+                quatChanged = true;
+            }
+            else if (!quatChanged)
+            {
+                targetQuat = 0f;
+                // transform.localRotation = Quaternion.identity;
+            }
+
+            if (animator.GetBool("Backward") && !(animator.GetBool("Left") || animator.GetBool("Right")))
+            {
+                // transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
+                if (targetQuat < 0)
+                {
+                    targetQuat = -180f;
+                }
+                else
+                {
+                    targetQuat = 180f;
+                }
+
+                quatChanged = true;
+            }
+            else if (!quatChanged)
+            {
+                targetQuat = 0f;
+                // transform.localRotation = Quaternion.identity;
             }
         }
+        private void LerpQuat()
+        {
+            curQuat = Mathf.Lerp(curQuat, targetQuat, Time.deltaTime * quatSpeed);
+
+            transform.localRotation = Quaternion.Euler(0f, curQuat, 0f);
+        }
+
         private void CheckMoveAnime()
         {
-            if(!(currentPlayer.CurrentState == PlayerState.Move || currentPlayer.CurrentState == PlayerState.Sprint))
+            if (!(currentPlayer.CurrentState == PlayerState.Move || currentPlayer.CurrentState == PlayerState.Sprint))
             {
                 ResetParams();
 
@@ -75,27 +152,27 @@ namespace Player
 
             animator.ResetTrigger("GoToWait");
 
-            switch(currentPlayer.CurrentState)
+            switch (currentPlayer.CurrentState)
             {
                 case PlayerState.Move:
-                {
-                    if(!animator.GetBool("Move"))
                     {
-                        animator.Play("WALK00_F");
-                        animator.SetBool("Move", true);
+                        if (!animator.GetBool("Move"))
+                        {
+                            animator.Play("WALK00_F");
+                            animator.SetBool("Move", true);
+                        }
                     }
-                }
-                break;
+                    break;
 
                 case PlayerState.Sprint:
-                {
-                    if(!animator.GetBool("Sprint"))
                     {
-                        animator.Play("WALK00_F");
-                        animator.SetBool("Sprint", true);
+                        if (!animator.GetBool("Sprint"))
+                        {
+                            animator.Play("WALK00_F");
+                            animator.SetBool("Sprint", true);
+                        }
                     }
-                }
-                break;
+                    break;
             }
         }
 

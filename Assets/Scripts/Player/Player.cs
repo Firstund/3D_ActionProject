@@ -173,7 +173,6 @@ namespace Player
         private void SetPlayerRot()
         {
             transform.LookAt(playerCamera.playerForwardVector + transform.position);
-            playerBody.transform.rotation = transform.rotation;
         }
 
         /// <summary>
