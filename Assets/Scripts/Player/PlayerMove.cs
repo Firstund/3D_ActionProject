@@ -32,6 +32,20 @@ namespace Player
 
         private bool jumpDelayTimerStart = false;
 
+        private bool canChangeDirection = true;
+        public bool CanChangeDirection
+        {
+            get
+            {
+                return canChangeDirection;
+            }
+
+            set
+            {
+                canChangeDirection = value;
+            }
+        }
+
         [SerializeField]
         private float jumpRayDistance = 0.5f;
 
@@ -81,6 +95,11 @@ namespace Player
         /// </summary>
         private void CheckMove()
         {
+            if(!canChangeDirection)
+            {
+                return;
+            }
+
             Vector3 moveDirection = Vector3.zero;
 
             if (playerInput.GetKeyDict(PlayerKey.MoveForward))
@@ -104,7 +123,7 @@ namespace Player
         }
 
         /// <summary>
-        /// 점프를 체크하는 함수
+        /// 공중에 떠있는지를 체크하는 함수
         /// </summary>
         private void CheckInAir()
         {

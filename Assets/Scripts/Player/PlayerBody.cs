@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Threading;
 using UnityEngine;
 
 namespace Player
@@ -24,7 +27,28 @@ namespace Player
 
         private bool jumpAddForceTimerStart = false;
 
+        [SerializeField]
+        private float comboTime = 1f;
+        private float comboCheckTimer = 0f;
+
+        private bool comboCheckTimerStart = false; // 후에 콤보 체크할 때 사용
+
         private bool animPlayed = false;
+        private bool attackAnimPlayed = false;
+
+        private bool canRotate = true;
+        public bool CanRotate
+        {
+            get
+            {
+                return canRotate;
+            }
+
+            set
+            {
+                canRotate = value;
+            }
+        }
 
         void Awake()
         {
@@ -34,6 +58,7 @@ namespace Player
         void Update()
         {
             CheckJumpAddForceTimer();
+            CheckComboTimer();
 
             animPlayed = false;
 
@@ -87,6 +112,11 @@ namespace Player
             #endregion
 
             float currentQuat = transform.localRotation.y;
+
+            if(!canRotate)
+            {
+                return;
+            }
 
             #region CheckQaut
             bool quatChanged = false;
@@ -147,12 +177,15 @@ namespace Player
 
         private void CheckGoToWait()
         {
-            if (!animPlayed)
+            if (!animPlayed && !attackAnimPlayed)
             {
                 animator.SetTrigger("GoToWait");
             }
         }
 
+        /// <summary>
+        ///  Move, Sprint를 체크한다음 애니메이션을 실행함
+        /// </summary>
         private void CheckMoveAnime()
         {
             if (!(currentPlayer.CurrentState == PlayerState.Move || currentPlayer.CurrentState == PlayerState.Sprint))
@@ -247,6 +280,74 @@ namespace Player
                     jumpAddForceTimerStart = false;
                 }
             }
+        }
+
+        /// <summary>
+        /// ComboTimer를 체크해줌
+        /// </summary>
+        private void CheckComboTimer()
+        {
+            if(comboCheckTimerStart && comboCheckTimer > 0f)
+            {
+                comboCheckTimer -= Time.deltaTime;
+
+                if(comboCheckTimer <= 0f)
+                {
+                    comboCheckTimerStart = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// SprintAttack 실행
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        public async void SprintAttackPlay(Action callback = null)
+        {
+            animator.Play("SLIDE00");
+
+            canRotate = false;
+            attackAnimPlayed = true;
+            currentPlayer.PlayerMove.CanChangeDirection = false;
+
+            float playTime = animator.GetCurrentAnimatorClipInfo(0).Length;
+
+            await Task.Delay((int)(playTime * 1000));
+
+            canRotate = true;
+            attackAnimPlayed = false;
+            currentPlayer.PlayerMove.CanChangeDirection = true;
+
+            callback?.Invoke();
+        }
+
+        /// <summary>
+        /// Attack을 실행함
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        public async void Attack(Action callback = null)
+        {
+            int attackCount = animator.GetInteger("AttackCount");
+
+            animator.Play("Attack" + attackCount);
+
+            attackCount++;
+            animator.SetInteger("AttackCount", attackCount);
+
+            float playTime = animator.GetCurrentAnimatorClipInfo(0).Length;
+            
+            canRotate = false;
+            attackAnimPlayed = true;
+
+            await Task.Delay((int)(playTime * 1000));
+
+            canRotate = true;
+            attackAnimPlayed = false;
+
+            comboCheckTimer = comboTime;
+            comboCheckTimerStart = true;            
         }
 
         private void ResetJumpParams()

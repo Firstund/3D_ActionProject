@@ -9,6 +9,7 @@ namespace Player
     {
         private Player player = null;
         private PlayerInput playerInput => player.PlayerInput;
+        private PlayerBody playerBody => player.PlayerBody;
 
         private PlayerState onEndState = default(PlayerState); // 공격이 끝났을 떄 어떤 State로 바뀌어야하는가
 
@@ -85,11 +86,19 @@ namespace Player
             if(player.GetCurrentState() == PlayerState.SprintAttack)
             {
                 isAttack = true;
-                attackTimer = attackTime;
+                // attackTimer = attackTime;
 
                 onEndState = PlayerState.Sprint;
 
-                Debug.Log("SprintAttack이야 임마!");
+                player.SetCurrentState(PlayerState.SprintAttack);
+
+                playerBody.SprintAttackPlay(() => {
+                    isAttack = false;
+                    
+                    player.SetCurrentState(onEndState);
+                });
+
+                // Debug.Log("SprintAttack이야 임마!");
             }
         }
     }
