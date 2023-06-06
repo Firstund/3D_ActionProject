@@ -86,66 +86,57 @@ namespace Player
             }
             #endregion
 
+            float currentQuat = transform.localRotation.y;
+
+            #region CheckQaut
             bool quatChanged = false;
-            if (!animator.GetBool("Forward") && animator.GetBool("Left"))
+            if (animator.GetBool("Forward"))
             {
-                // transform.localRotation = Quaternion.Euler(0f, -90f, 0f);
-                if (targetQuat < 0f)
+                if (animator.GetBool("Left"))
                 {
-                    targetQuat = -90f;
+                    targetQuat = Mathf.Abs(currentQuat - 315f) > Mathf.Abs(currentQuat + 45f) ? -45f : 315f;
+                }
+                else if (animator.GetBool("Right"))
+                {
+                    targetQuat = Mathf.Abs(currentQuat - 45f) > Mathf.Abs(currentQuat + 315f) ? -315f : 45f;
                 }
                 else
                 {
-                    targetQuat = 270f;
+                    targetQuat = Mathf.Abs(currentQuat) > Mathf.Abs(currentQuat + 360f) ? -360f : 0f;
                 }
+            }
+            else if (animator.GetBool("Backward"))
+            {
+                if (animator.GetBool("Left"))
+                {
+                    targetQuat = Mathf.Abs(currentQuat - 225f) > Mathf.Abs(currentQuat + 135f) ? -135f : 225f;
+                }
+                else if (animator.GetBool("Right"))
+                {
+                    targetQuat = Mathf.Abs(currentQuat - 135f) > Mathf.Abs(currentQuat + 225f) ? -225f : 135f;
+                }
+                else
+                {
+                    targetQuat = Mathf.Abs(currentQuat - 180f) > Mathf.Abs(currentQuat + 180f) ? -180f : 180f;
+                }
+            }
+            else if (animator.GetBool("Left"))
+            {
+                targetQuat = Mathf.Abs(currentQuat - 270f) > Mathf.Abs(currentQuat + 90f) ? -90f : 270f;
+
+                quatChanged = true;
+            }
+            else if (animator.GetBool("Right"))
+            {
+                targetQuat = Mathf.Abs(currentQuat - 90f) > Mathf.Abs(currentQuat + 270f) ? -270f : 90f;
 
                 quatChanged = true;
             }
             else if (!quatChanged)
             {
-                targetQuat = 0f;
-                // transform.localRotation = Quaternion.identity;
+                targetQuat = Mathf.Abs(currentQuat) > Mathf.Abs(currentQuat + 360f) ? -360f : 0f;
             }
-
-            if (!animator.GetBool("Forward") && animator.GetBool("Right"))
-            {
-                // transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
-                if (targetQuat < 0f)
-                {
-                    targetQuat = -270f;
-                }
-                else
-                {
-                    targetQuat = 90f;
-                }
-
-                quatChanged = true;
-            }
-            else if (!quatChanged)
-            {
-                targetQuat = 0f;
-                // transform.localRotation = Quaternion.identity;
-            }
-
-            if (animator.GetBool("Backward") && !(animator.GetBool("Left") || animator.GetBool("Right")))
-            {
-                // transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
-                if (targetQuat < 0)
-                {
-                    targetQuat = -180f;
-                }
-                else
-                {
-                    targetQuat = 180f;
-                }
-
-                quatChanged = true;
-            }
-            else if (!quatChanged)
-            {
-                targetQuat = 0f;
-                // transform.localRotation = Quaternion.identity;
-            }
+            #endregion
         }
         private void LerpQuat()
         {
@@ -244,11 +235,11 @@ namespace Player
         /// </summary>
         private void CheckJumpAddForceTimer()
         {
-            if(jumpAddForceTimerStart && jumpAddForceTimer > 0f)
+            if (jumpAddForceTimerStart && jumpAddForceTimer > 0f)
             {
                 jumpAddForceTimer -= Time.deltaTime;
 
-                if(jumpAddForceTimer <= 0f)
+                if (jumpAddForceTimer <= 0f)
                 {
                     animator.SetTrigger("JumpInAir");
                     JumpAddForce();
