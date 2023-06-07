@@ -28,6 +28,9 @@ namespace Player
         private bool jumpAddForceTimerStart = false;
 
         [SerializeField]
+        private int maxAttackCombo = 4;
+
+        [SerializeField]
         private float comboTime = 1f;
         private float comboCheckTimer = 0f;
 
@@ -113,7 +116,7 @@ namespace Player
 
             float currentQuat = transform.localRotation.y;
 
-            if(!canRotate)
+            if (!canRotate)
             {
                 return;
             }
@@ -162,10 +165,10 @@ namespace Player
 
                 quatChanged = true;
             }
-            else if (!quatChanged)
-            {
-                targetQuat = Mathf.Abs(currentQuat) > Mathf.Abs(currentQuat + 360f) ? -360f : 0f;
-            }
+            // else if (!quatChanged)
+            // {
+            //     targetQuat = Mathf.Abs(currentQuat) > Mathf.Abs(currentQuat + 360f) ? -360f : 0f;
+            // }
             #endregion
         }
         private void LerpQuat()
@@ -287,13 +290,15 @@ namespace Player
         /// </summary>
         private void CheckComboTimer()
         {
-            if(comboCheckTimerStart && comboCheckTimer > 0f)
+            if (comboCheckTimerStart && comboCheckTimer > 0f)
             {
                 comboCheckTimer -= Time.deltaTime;
 
-                if(comboCheckTimer <= 0f)
+                if (comboCheckTimer <= 0f)
                 {
                     comboCheckTimerStart = false;
+
+                    animator.SetInteger("AttackCount", 0);
                 }
             }
         }
@@ -311,9 +316,21 @@ namespace Player
             attackAnimPlayed = true;
             currentPlayer.PlayerMove.CanChangeDirection = false;
 
-            float playTime = animator.GetCurrentAnimatorClipInfo(0).Length;
+            animator.ResetTrigger("GoToWait");
 
-            await Task.Delay((int)(playTime * 1000));
+            // Debug.Log(playTime);
+
+            while(true)
+            {
+                await Task.Delay(1);
+
+                Debug.Log(animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
+
+                if(animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+                {
+                    break;
+                }
+            }
 
             canRotate = true;
             attackAnimPlayed = false;
@@ -327,7 +344,7 @@ namespace Player
         /// </summary>
         /// <param name="callback"></param>
         /// <returns></returns>
-        public async void Attack(Action callback = null)
+        public async void AttackPlay(Action callback = null)
         {
             int attackCount = animator.GetInteger("AttackCount");
 
@@ -336,18 +353,41 @@ namespace Player
             attackCount++;
             animator.SetInteger("AttackCount", attackCount);
 
-            float playTime = animator.GetCurrentAnimatorClipInfo(0).Length;
-            
             canRotate = false;
+            comboCheckTimerStart = false;
             attackAnimPlayed = true;
 
-            await Task.Delay((int)(playTime * 1000));
+            animator.ResetTrigger("GoToWait");
+
+            while(true)
+            {
+                await Task.Delay(1);
+
+                Debug.Log(animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
+
+                if(animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+                {
+                    break;
+                }
+            }
+
+            // Debug.Log(animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
+
+            callback?.Invoke();
 
             canRotate = true;
             attackAnimPlayed = false;
 
-            comboCheckTimer = comboTime;
-            comboCheckTimerStart = true;            
+            if (attackCount >= maxAttackCombo)
+            {
+                animator.SetInteger("AttackCount", 0);
+            }
+            else
+            {
+                comboCheckTimer = comboTime;
+                comboCheckTimerStart = true;
+            }
+
         }
 
         private void ResetJumpParams()

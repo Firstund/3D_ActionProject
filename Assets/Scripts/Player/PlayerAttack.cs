@@ -59,18 +59,34 @@ namespace Player
             if(player.GetCurrentState() == PlayerState.Attack)
             {
                 isAttack = true;
-                attackTimer = attackTime;
+                // attackTimer = attackTime;
 
                 onEndState = PlayerState.Idle;
+
+                player.SetCurrentState(PlayerState.Attack);
+
+                playerBody.AttackPlay(() => {
+                    isAttack = false;
+
+                    player.SetCurrentState(onEndState);
+                });
 
                 Debug.Log("그냥 Attack이야 임마!");
             }
             if(player.GetCurrentState() == PlayerState.MoveAttack)
             {
                 isAttack = true;
-                attackTimer = attackTime;
+                // attackTimer = attackTime;
 
                 onEndState = PlayerState.Move;
+
+                player.SetCurrentState(PlayerState.MoveAttack);
+
+                playerBody.AttackPlay(() => {
+                    isAttack = false;
+
+                    player.SetCurrentState(onEndState);
+                });
 
                 Debug.Log("MoveAttack이야 임마!");
             }
