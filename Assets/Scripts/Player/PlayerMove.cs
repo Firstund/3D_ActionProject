@@ -64,7 +64,7 @@ namespace Player
             CheckJumpDelay();
 
             if (player.GetCurrentState() == PlayerState.Move || player.GetCurrentState() == PlayerState.Sprint || player.GetCurrentState() == PlayerState.Jump ||
-                player.GetCurrentState() == PlayerState.MoveAttack || player.GetCurrentState() == PlayerState.SprintAttack || player.GetCurrentState() == PlayerState.JumpAttack)
+                /*player.GetCurrentState() == PlayerState.MoveAttack ||*/ player.GetCurrentState() == PlayerState.SprintAttack || player.GetCurrentState() == PlayerState.JumpAttack)
             {
                 CheckMove();
                 CheckInAir();
@@ -150,18 +150,23 @@ namespace Player
         /// </summary>
         private void Move()
         {
-            Vector3 currentPosition = transform.position;
+            // Vector3 currentPosition = transform.position;
+            Vector3 moveVec = Vector3.zero;
 
             if (player.GetCurrentState() == PlayerState.Sprint || player.GetCurrentState() == PlayerState.SprintAttack)
             {
-                currentPosition += currentMoveDirection * player.PlayerStats.sprintSpeed * Time.deltaTime;
+                // currentPosition += currentMoveDirection * player.PlayerStats.sprintSpeed * Time.deltaTime;
+                moveVec = currentMoveDirection * player.PlayerStats.sprintSpeed;
+                player.PlayerRigidbody.velocity = new Vector3(moveVec.x, player.PlayerRigidbody.velocity.y, moveVec.z);
             }
             else
             {
-                currentPosition += currentMoveDirection * player.PlayerStats.speed * Time.deltaTime;
+                // currentPosition += currentMoveDirection * player.PlayerStats.speed * Time.deltaTime;
+                moveVec = currentMoveDirection * player.PlayerStats.speed;
+                player.PlayerRigidbody.velocity = new Vector3(moveVec.x, player.PlayerRigidbody.velocity.y, moveVec.z);
             }
 
-            transform.position = currentPosition;
+            // transform.position = currentPosition;
         }
 
         /// <summary>

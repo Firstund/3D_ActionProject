@@ -165,10 +165,10 @@ namespace Player
 
                 quatChanged = true;
             }
-            else if (!quatChanged)
-            {
-                targetQuat = Mathf.Abs(currentQuat) > Mathf.Abs(currentQuat + 360f) ? -360f : 0f;
-            }
+            // else if (!quatChanged)
+            // {
+            //     targetQuat = Mathf.Abs(currentQuat) > Mathf.Abs(currentQuat + 360f) ? -360f : 0f;
+            // }
             #endregion
         }
         private void LerpQuat()
