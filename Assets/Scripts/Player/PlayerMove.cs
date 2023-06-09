@@ -24,13 +24,15 @@ namespace Player
             }
         }
 
-        private bool isJump = false;
+        private Vector3 moveValue = Vector3.zero;
 
         [SerializeField]
-        private float jumpDelay = 0.1f;
-        private float jumpDelayTimer = 0f;
+        private float jumpDuration = 1f;    // 점프 시간
+        private float jumpTimer = 0f;
 
-        private bool jumpDelayTimerStart = false;
+        private bool jumpTimerStart = false;
+
+        private bool isJumping = false;     // 점프 중인지 여부
 
         private bool canChangeDirection = true;
         public bool CanChangeDirection
@@ -61,32 +63,19 @@ namespace Player
 
         void Update()
         {
-            CheckJumpDelay();
-
             if (player.GetCurrentState() == PlayerState.Move || player.GetCurrentState() == PlayerState.Sprint || player.GetCurrentState() == PlayerState.Jump ||
                 /*player.GetCurrentState() == PlayerState.MoveAttack ||*/ player.GetCurrentState() == PlayerState.SprintAttack || player.GetCurrentState() == PlayerState.JumpAttack)
             {
+                moveValue = Vector3.zero;
+
                 CheckMove();
                 CheckInAir();
+                CheckJump();
 
                 Move();
                 Jump();
-            }
-        }
 
-        /// <summary>
-        /// JumpDelay를 체크해줌
-        /// </summary>
-        private void CheckJumpDelay()
-        {
-            if (jumpDelayTimerStart && jumpDelayTimer > 0f)
-            {
-                jumpDelayTimer -= Time.deltaTime;
-
-                if (jumpDelayTimer <= 0f)
-                {
-                    jumpDelayTimerStart = false;
-                }
+                transform.position += moveValue;
             }
         }
 
@@ -95,7 +84,7 @@ namespace Player
         /// </summary>
         private void CheckMove()
         {
-            if(!canChangeDirection)
+            if (!canChangeDirection)
             {
                 return;
             }
@@ -132,13 +121,13 @@ namespace Player
             ray.origin = transform.position;
             ray.direction = Vector3.down;
 
-            if (isJump)
+            if (isJumping)
             {
                 Debug.DrawRay(ray.origin, ray.direction * jumpRayDistance, Color.red, 10f);
 
                 if (Physics.Raycast(ray.origin, ray.direction, jumpRayDistance, player.FloorLayerMask))
                 {
-                    isJump = false;
+                    isJumping = false;
 
                     player.SetCurrentState(PlayerState.Idle);
                 }
@@ -150,23 +139,42 @@ namespace Player
         /// </summary>
         private void Move()
         {
-            // Vector3 currentPosition = transform.position;
-            Vector3 moveVec = Vector3.zero;
+            // Vector3 moveVec = Vector3.zero;
 
             if (player.GetCurrentState() == PlayerState.Sprint || player.GetCurrentState() == PlayerState.SprintAttack)
             {
-                // currentPosition += currentMoveDirection * player.PlayerStats.sprintSpeed * Time.deltaTime;
-                moveVec = currentMoveDirection * player.PlayerStats.sprintSpeed;
-                player.PlayerRigidbody.velocity = new Vector3(moveVec.x, player.PlayerRigidbody.velocity.y, moveVec.z);
+                moveValue += currentMoveDirection * player.PlayerStats.sprintSpeed * Time.deltaTime;
             }
             else
             {
-                // currentPosition += currentMoveDirection * player.PlayerStats.speed * Time.deltaTime;
-                moveVec = currentMoveDirection * player.PlayerStats.speed;
-                player.PlayerRigidbody.velocity = new Vector3(moveVec.x, player.PlayerRigidbody.velocity.y, moveVec.z);
+                moveValue += currentMoveDirection * player.PlayerStats.speed * Time.deltaTime;
+            }
+        }
+
+        private void CheckJumpTimer()
+        {
+            if (jumpTimerStart && jumpTimer > 0f)
+            {
+                jumpTimer -= Time.deltaTime;
+
+                if (jumpTimer <= 0f)
+                {
+                    isJumping = false;
+                    jumpTimerStart = false;
+                }
+            }
+        }
+
+        private void CheckJump()
+        {
+            if ((player.GetCurrentState() == PlayerState.Jump || player.GetCurrentState() == PlayerState.JumpAttack) && !isJumping)
+            {
+                isJumping = true;
+
+                jumpTimerStart = true;
+                jumpTimer = jumpDuration;
             }
 
-            // transform.position = currentPosition;
         }
 
         /// <summary>
@@ -174,12 +182,14 @@ namespace Player
         /// </summary>
         private void Jump()
         {
-            if ((player.GetCurrentState() == PlayerState.Jump || player.GetCurrentState() == PlayerState.JumpAttack) && !isJump && !jumpDelayTimerStart)
+            if (isJumping)
             {
-                jumpDelayTimer = jumpDelay;
-                jumpDelayTimerStart = true;
+                // MoveValue값 변경을 통한 구현
+                float normalizedTime = jumpTimer / jumpDuration;
+                float jumpProgress = Mathf.Sin(normalizedTime * Mathf.PI);
 
-                isJump = true;
+                Vector3 jumpVector = Vector3.up * player.PlayerStats.jumpPower * jumpProgress;
+                moveValue += jumpVector;
             }
         }
     }
