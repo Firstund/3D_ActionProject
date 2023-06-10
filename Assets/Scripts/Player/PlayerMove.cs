@@ -26,6 +26,11 @@ namespace Player
 
         private Vector3 moveValue = Vector3.zero;
 
+        private float fallenValue = 0f;
+
+        [SerializeField]
+        private float gravityPower = 1f;
+
         [SerializeField]
         private float jumpDuration = 1f;    // 점프 시간
         private float jumpTimer = 0f;
@@ -48,9 +53,6 @@ namespace Player
             }
         }
 
-        [SerializeField]
-        private float jumpRayDistance = 0.5f;
-
         private void Awake()
         {
             player = GetComponent<Player>();
@@ -63,19 +65,39 @@ namespace Player
 
         void Update()
         {
+            CheckJumpTimer();
+
+            moveValue = Vector3.zero;
+
             if (player.GetCurrentState() == PlayerState.Move || player.GetCurrentState() == PlayerState.Sprint || player.GetCurrentState() == PlayerState.Jump ||
                 /*player.GetCurrentState() == PlayerState.MoveAttack ||*/ player.GetCurrentState() == PlayerState.SprintAttack || player.GetCurrentState() == PlayerState.JumpAttack)
             {
-                moveValue = Vector3.zero;
 
                 CheckMove();
-                CheckInAir();
                 CheckJump();
 
                 Move();
                 Jump();
 
-                transform.position += moveValue;
+            }
+
+            Gravity();
+
+            transform.position += moveValue;
+        }
+
+        private void Gravity()
+        {
+            if (player.CurrentState == PlayerState.InAirIdle)
+            {
+                float gravityVec = Mathf.Sqrt((GameManager.Instance.AccelerationOfGravity * fallenValue) + GameManager.Instance.AccelerationOfGravity) * Time.deltaTime;
+
+                moveValue.y -= gravityVec;
+                fallenValue += Mathf.Abs(gravityVec);
+            }
+            else
+            {
+                fallenValue = 0f;
             }
         }
 
@@ -112,36 +134,13 @@ namespace Player
         }
 
         /// <summary>
-        /// 공중에 떠있는지를 체크하는 함수
-        /// </summary>
-        private void CheckInAir()
-        {
-            Ray ray = default(Ray);
-
-            ray.origin = transform.position;
-            ray.direction = Vector3.down;
-
-            if (isJumping)
-            {
-                Debug.DrawRay(ray.origin, ray.direction * jumpRayDistance, Color.red, 10f);
-
-                if (Physics.Raycast(ray.origin, ray.direction, jumpRayDistance, player.FloorLayerMask))
-                {
-                    isJumping = false;
-
-                    player.SetCurrentState(PlayerState.Idle);
-                }
-            }
-        }
-
-        /// <summary>
         /// 움직임을 담당하는 함수
         /// </summary>
         private void Move()
         {
             // Vector3 moveVec = Vector3.zero;
 
-            if (player.GetCurrentState() == PlayerState.Sprint || player.GetCurrentState() == PlayerState.SprintAttack)
+            if (playerInput.GetKeyDict(PlayerKey.Sprint))
             {
                 moveValue += currentMoveDirection * player.PlayerStats.sprintSpeed * Time.deltaTime;
             }
@@ -161,6 +160,8 @@ namespace Player
                 {
                     isJumping = false;
                     jumpTimerStart = false;
+
+                    player.SetCurrentState(PlayerState.Idle);
                 }
             }
         }
@@ -189,6 +190,8 @@ namespace Player
                 float jumpProgress = Mathf.Sin(normalizedTime * Mathf.PI);
 
                 Vector3 jumpVector = Vector3.up * player.PlayerStats.jumpPower * jumpProgress;
+
+                // Debug.Log(jumpVector);
                 moveValue += jumpVector;
             }
         }

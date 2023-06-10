@@ -14,6 +14,13 @@ namespace Player
 
         [SerializeField]
         private Animator animator = null;
+        public Animator Animator
+        {
+            get
+            {
+                return animator;
+            }
+        }
 
         private float targetQuat = 0f;
         private float curQuat = 0f;
@@ -388,6 +395,11 @@ namespace Player
                 comboCheckTimerStart = true;
             }
 
+        }
+
+        private void ResetInAirParams()
+        {
+            animator.SetBool("InAir", false);
         }
 
         private void ResetJumpParams()

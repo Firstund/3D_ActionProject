@@ -9,6 +9,7 @@ namespace Player
     public enum PlayerState
     {
         Idle,
+        InAirIdle,
 
         Move,
         Jump,
@@ -31,9 +32,9 @@ namespace Player
         public int ap = 2;
         public int dp = 2;
 
-        public int speed = 1;
-        public int sprintSpeed = 2;
-        public int jumpPower = 1;
+        public float speed = 1;
+        public float sprintSpeed = 2;
+        public float jumpPower = 1;
     }
 
     public class Player : MonoBehaviour
@@ -106,7 +107,7 @@ namespace Player
         {
             get
             {
-                if(playerMove == null)
+                if (playerMove == null)
                 {
                     playerMove = GetComponent<PlayerMove>();
                 }
@@ -123,7 +124,7 @@ namespace Player
         {
             get
             {
-                if(playerAttack == null)
+                if (playerAttack == null)
                 {
                     playerAttack = GetComponent<PlayerAttack>();
                 }
@@ -140,7 +141,7 @@ namespace Player
         {
             get
             {
-                if(playerInput == null)
+                if (playerInput == null)
                 {
                     playerInput = GetComponent<PlayerInput>();
                 }
@@ -158,6 +159,10 @@ namespace Player
             }
         }
 
+
+        [SerializeField]
+        private float inAirRayDistance = 0.5f;
+
         private void Awake()
         {
             GameManager.Instance.CurrentPlayer = this;
@@ -168,6 +173,7 @@ namespace Player
         void Update()
         {
             SetPlayerRot();
+            CheckInAir();
         }
 
         private void SetPlayerRot()
@@ -193,6 +199,32 @@ namespace Player
             // 새로운 State를 설정했을시 처리해줘야 하는 작업들 코드로 작성하기
 
             currentState = nState;
+        }
+
+        /// <summary>
+        /// 공중에 떠있는지를 체크하는 함수
+        /// </summary>
+        private void CheckInAir()
+        {
+            Ray ray = default(Ray);
+
+            ray.origin = transform.position;
+            ray.direction = Vector3.down;
+
+            Debug.DrawRay(ray.origin, ray.direction * inAirRayDistance, Color.red, Time.deltaTime);
+
+            if (!Physics.Raycast(ray.origin, ray.direction, inAirRayDistance, floorLayerMask))
+            {
+                if(!(CurrentState == PlayerState.Jump || CurrentState == PlayerState.JumpAttack))
+                {
+                    SetCurrentState(PlayerState.InAirIdle);
+                    playerBody.Animator.SetBool("InAir", true);
+                }
+            }
+            else
+            {
+                playerBody.Animator.SetBool("InAir", false);
+            }
         }
     }
 }
