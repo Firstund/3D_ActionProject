@@ -206,6 +206,11 @@ namespace Player
         /// </summary>
         private void CheckInAir()
         {
+            if(PlayerAttack.IsAttack)
+            {
+                return;
+            }
+
             Ray ray = default(Ray);
 
             ray.origin = transform.position;

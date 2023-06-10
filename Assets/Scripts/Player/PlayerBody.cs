@@ -331,8 +331,6 @@ namespace Player
             {
                 await Task.Delay(1);
 
-                Debug.Log(animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
-
                 if(animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
                 {
                     break;

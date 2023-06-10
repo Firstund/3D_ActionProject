@@ -14,6 +14,14 @@ namespace Player
         private PlayerState onEndState = default(PlayerState); // 공격이 끝났을 떄 어떤 State로 바뀌어야하는가
 
         private bool isAttack = false;
+        public bool IsAttack
+        {
+            get
+            {
+                return isAttack;
+            }
+        }
+        
         [SerializeField]
         private float attackTime = 1f; // 테스트용 어택을 하는데 걸리는 시간
         private float attackTimer = 0f;
@@ -116,6 +124,11 @@ namespace Player
 
                 // Debug.Log("SprintAttack이야 임마!");
             }
+        }
+
+        public void ResetIsAttack()
+        {
+            isAttack = false;
         }
     }
 }

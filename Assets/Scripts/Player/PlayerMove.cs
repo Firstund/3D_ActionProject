@@ -25,6 +25,7 @@ namespace Player
         }
 
         private Vector3 moveValue = Vector3.zero;
+        private Vector3 prevJumpVector = Vector3.zero;
 
         private float fallenValue = 0f;
 
@@ -187,15 +188,31 @@ namespace Player
             {
                 // MoveValue값 변경을 통한 구현
                 float normalizedTime = jumpTimer / jumpDuration;
-                float jumpProgress = Mathf.Sin(normalizedTime * Mathf.PI);
+                float jumpProgress = JumpGraph(normalizedTime);
 
                 // 2차함수를 이용한 점프 구현 해보기
 
                 Vector3 jumpVector = Vector3.up * player.PlayerStats.jumpPower * jumpProgress;
+                Vector3 jumpDelta = jumpVector - prevJumpVector;
 
                 // Debug.Log(jumpVector);
-                moveValue += jumpVector;
+                moveValue += jumpDelta;
+
+                prevJumpVector = jumpVector;
             }
+            else
+            {
+                prevJumpVector = Vector3.zero;
+            }
+        }
+
+        private float JumpGraph(float x)
+        {
+            float y = 0f;
+
+            y = (-4) * (Mathf.Pow(x, 2)) + 4 * x;
+
+            return y;
         }
     }
 }
