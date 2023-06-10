@@ -189,6 +189,8 @@ namespace Player
                 float normalizedTime = jumpTimer / jumpDuration;
                 float jumpProgress = Mathf.Sin(normalizedTime * Mathf.PI);
 
+                // 2차함수를 이용한 점프 구현 해보기
+
                 Vector3 jumpVector = Vector3.up * player.PlayerStats.jumpPower * jumpProgress;
 
                 // Debug.Log(jumpVector);
