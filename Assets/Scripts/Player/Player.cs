@@ -98,6 +98,19 @@ namespace Player
                 return playerBody;
             }
         }
+        
+        /// <summary>
+        /// 플레이어 클론 몸체의 프리팹을 저장
+        /// </summary>
+        [SerializeField]
+        private GameObject playerBodyCloneObject = null;
+        public GameObject PlayerBodyCloneObject
+        {
+            get
+            {
+                return playerBodyCloneObject;
+            }
+        }
 
         /// <summary>
         /// PlayerMove 스크립트

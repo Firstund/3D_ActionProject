@@ -129,7 +129,6 @@ namespace Player
             }
 
             #region CheckQaut
-            bool quatChanged = false;
             if (animator.GetBool("Forward"))
             {
                 if (animator.GetBool("Left"))
@@ -163,19 +162,12 @@ namespace Player
             else if (animator.GetBool("Left"))
             {
                 targetQuat = Mathf.Abs(currentQuat - 270f) > Mathf.Abs(currentQuat + 90f) ? -90f : 270f;
-
-                quatChanged = true;
             }
             else if (animator.GetBool("Right"))
             {
                 targetQuat = Mathf.Abs(currentQuat - 90f) > Mathf.Abs(currentQuat + 270f) ? -270f : 90f;
-
-                quatChanged = true;
             }
-            // else if (!quatChanged)
-            // {
-            //     targetQuat = Mathf.Abs(currentQuat) > Mathf.Abs(currentQuat + 360f) ? -360f : 0f;
-            // }
+
             #endregion
         }
         private void LerpQuat()
@@ -327,11 +319,43 @@ namespace Player
 
             // Debug.Log(playTime);
 
-            while(true)
+            int spawnDelay = 1; // milliSeconds
+            int spawnDelayTimer = 0;
+
+            // 타이머 작동 방식에 대해 고민해볼 필요가 있음
+            while (true)
             {
+                // Debug.Log("loop");
                 await Task.Delay(1);
 
-                if(animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+                float animNormalizedTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+
+                if (spawnDelayTimer > 0)
+                {
+                    
+                    spawnDelayTimer -= 1;
+                }
+                else
+                {
+                    GameObject playerBodyClone = PoolManager.Instance.GetObject<GameObject>("PlayerBodyClone");
+
+                    if (playerBodyClone == null)
+                    {
+                        playerBodyClone = Instantiate(currentPlayer.PlayerBodyCloneObject);
+                    }
+
+                    playerBodyClone.SetActive(true);
+                    playerBodyClone.transform.position = transform.position;
+                    playerBodyClone.transform.rotation = transform.rotation;
+
+                    PlayerBodyClone bodyScript = playerBodyClone.GetComponent<PlayerBodyClone>();
+                    bodyScript.SetMotion("SLIDE00", 0, animNormalizedTime, 0);
+                    bodyScript.OnSpawn(0.3f);
+
+                    spawnDelayTimer = spawnDelay;
+                }
+
+                if (animNormalizedTime >= 1f)
                 {
                     break;
                 }
@@ -340,6 +364,31 @@ namespace Player
             canRotate = true;
             attackAnimPlayed = false;
             currentPlayer.PlayerMove.CanChangeDirection = true;
+
+            callback?.Invoke();
+        }
+
+        /// <summary>
+        /// JumpAttack을 실행함
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        public async void JumpAttackPlay(Action callback = null)
+        {
+            int attackCount = animator.GetInteger("AttackCount");
+
+            attackCount++;
+            animator.SetInteger("AttackCount", attackCount);
+
+            while (true)
+            {
+                await Task.Delay(1);
+
+                if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+                {
+                    break;
+                }
+            }
 
             callback?.Invoke();
         }
@@ -364,13 +413,13 @@ namespace Player
 
             animator.ResetTrigger("GoToWait");
 
-            while(true)
+            while (true)
             {
                 await Task.Delay(1);
 
                 Debug.Log(animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
 
-                if(animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+                if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
                 {
                     break;
                 }

@@ -21,10 +21,6 @@ namespace Player
                 return isAttack;
             }
         }
-        
-        [SerializeField]
-        private float attackTime = 1f; // 테스트용 어택을 하는데 걸리는 시간
-        private float attackTimer = 0f;
 
         private void Awake()
         {
@@ -37,26 +33,9 @@ namespace Player
 
         void Update()
         {
-            CheckTimer();
-
             CheckAttack();
         }
 
-        private void CheckTimer()
-        {
-            if(isAttack && attackTimer > 0f)
-            {
-                attackTimer -= Time.deltaTime;
-
-                if(attackTimer <= 0f)
-                {
-                    Debug.Log("Attack 타이머가 다 됐단다");
-
-                    isAttack = false;
-                    player.SetCurrentState(onEndState);
-                }
-            }
-        }
         private void CheckAttack()
         {
             if(isAttack)
@@ -101,9 +80,14 @@ namespace Player
             if(player.GetCurrentState() == PlayerState.JumpAttack)
             {
                 isAttack = true;
-                attackTimer = attackTime;
 
                 onEndState = PlayerState.Jump;
+
+                playerBody.JumpAttackPlay(() =>{
+                    isAttack = false;
+
+                    player.SetCurrentState(onEndState);
+                });
 
                 Debug.Log("JumpAttack이야 임마!");
             }
