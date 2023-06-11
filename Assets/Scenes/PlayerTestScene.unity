@@ -185,7 +185,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 52837157}
-  m_LocalRotation: {x: -0.27426305, y: 0.017331671, z: -0.060639616, w: 0.9595845}
+  m_LocalRotation: {x: -0.27426305, y: 0.01733166, z: -0.060639575, w: 0.9595845}
   m_LocalPosition: {x: -2.19, y: -5.2799997, z: -10.13}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -500,7 +500,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: -0.27426305, y: 0.017331671, z: -0.060639616, w: 0.9595845}
+  m_LocalRotation: {x: -0.27426305, y: 0.01733166, z: -0.060639575, w: 0.9595845}
   m_LocalPosition: {x: -2.19, y: -5.279999, z: -10.129997}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -726,6 +726,10 @@ PrefabInstance:
       propertyPath: inAirRayDistance
       value: 0.6
       objectReference: {fileID: 0}
+    - target: {fileID: 6036642382100174315, guid: bf07a2d4d39561a409117bc3c6cb66bd, type: 3}
+      propertyPath: playerBodyCloneObject
+      value: 
+      objectReference: {fileID: 4989983546837302407, guid: 24178285060f60d4fac658e2c07e3381, type: 3}
     - target: {fileID: 6036642382100174315, guid: bf07a2d4d39561a409117bc3c6cb66bd, type: 3}
       propertyPath: playerStats.jumpPower
       value: 1

@@ -11,19 +11,16 @@ Material:
   m_Shader: {fileID: 4800000, guid: 760f4a0d8f0ac2742810be3af0c50690, type: 3}
   m_ValidKeywords:
   - _EMISSIVE_SIMPLE
-  - _IS_ANGELRING_OFF
-  - _IS_TRANSCLIPPING_OFF
   - _OUTLINE_NML
-  - _SHADINGGRADEMAP
+  - _SPECULAR_SETUP
   m_InvalidKeywords:
   - _
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: -1
   stringTagMap:
     IgnoreProjection: False
-    RenderType: Opaque
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -314,7 +311,7 @@ Material:
     - _Unlit_Intensity: 1
     - _Use_1stAs2nd: 1
     - _Use_BaseAs1st: 1
-    - _WorkflowMode: 1
+    - _WorkflowMode: 0
     - _ZOverDrawMode: 0
     - _ZWrite: 1
     - _ZWriteMode: 1
