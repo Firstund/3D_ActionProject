@@ -80,6 +80,7 @@ public static partial class ScriptHelper
             return (int)++a;
         }
     }
+    
     public static Vector2 RandomVector(Vector2 min, Vector2 max)
     {
         float x = UnityEngine.Random.Range(min.x, max.x);

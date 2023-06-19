@@ -27,17 +27,17 @@ namespace Player
     [Serializable]
     public class PlayerStats
     {
-        public int hp = 10;
+        public float hp = 10f;
 
-        public int ap = 2;
-        public int dp = 2;
+        public float ap = 2f;
+        public float dp = 2f;
 
-        public float speed = 1;
-        public float sprintSpeed = 2;
-        public float jumpPower = 1;
+        public float speed = 1f;
+        public float sprintSpeed = 2f;
+        public float jumpPower = 1f;
     }
 
-    public class Player : MonoBehaviour
+    public class Player : MonoBehaviour, IEntity
     {
         [SerializeField]
         private LayerMask floorLayerMask = default(LayerMask);
@@ -243,6 +243,30 @@ namespace Player
             {
                 playerBody.Animator.SetBool("InAir", false);
             }
+        }
+
+        /// <summary>
+        /// 데미지 처리를 해주는 함수
+        /// </summary>
+        /// <param name="hitDamage"></param>
+        public void OnHit(float hitDamage)
+        {
+            // 후에 더 정확한 피격식을 작성할것
+
+            Debug.Log("플레이어 아파용! 데미지: " + hitDamage);
+
+            playerStats.hp -= hitDamage;
+        }
+
+        /// <summary>
+        /// 플레이어의 데미지를 반환해주는 함수
+        /// </summary>
+        /// <returns></returns>
+        public float GetDamage()
+        {
+            // 후에 더 정확한 공격식을 작성할것
+
+            return playerStats.ap;
         }
     }
 }
