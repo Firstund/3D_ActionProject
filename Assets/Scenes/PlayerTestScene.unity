@@ -868,42 +868,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4700668289711653267, guid: bf07a2d4d39561a409117bc3c6cb66bd, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.5
-      objectReference: {fileID: 0}
     - target: {fileID: 6036642382100174304, guid: bf07a2d4d39561a409117bc3c6cb66bd, type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036642382100174305, guid: bf07a2d4d39561a409117bc3c6cb66bd, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036642382100174313, guid: bf07a2d4d39561a409117bc3c6cb66bd, type: 3}
-      propertyPath: m_UseGravity
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036642382100174313, guid: bf07a2d4d39561a409117bc3c6cb66bd, type: 3}
-      propertyPath: m_Constraints
-      value: 84
       objectReference: {fileID: 0}
     - target: {fileID: 6036642382100174315, guid: bf07a2d4d39561a409117bc3c6cb66bd, type: 3}
       propertyPath: playerCamera
       value: 
       objectReference: {fileID: 1563443873}
-    - target: {fileID: 6036642382100174315, guid: bf07a2d4d39561a409117bc3c6cb66bd, type: 3}
-      propertyPath: inAirRayDistance
-      value: 0.6
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036642382100174315, guid: bf07a2d4d39561a409117bc3c6cb66bd, type: 3}
-      propertyPath: playerBodyCloneObject
-      value: 
-      objectReference: {fileID: 4989983546837302407, guid: 24178285060f60d4fac658e2c07e3381, type: 3}
-    - target: {fileID: 6036642382100174315, guid: bf07a2d4d39561a409117bc3c6cb66bd, type: 3}
-      propertyPath: playerStats.jumpPower
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6036642382100174316, guid: bf07a2d4d39561a409117bc3c6cb66bd, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -947,10 +919,6 @@ PrefabInstance:
     - target: {fileID: 6036642382100174316, guid: bf07a2d4d39561a409117bc3c6cb66bd, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036642382100174317, guid: bf07a2d4d39561a409117bc3c6cb66bd, type: 3}
-      propertyPath: gravityPower
-      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bf07a2d4d39561a409117bc3c6cb66bd, type: 3}
