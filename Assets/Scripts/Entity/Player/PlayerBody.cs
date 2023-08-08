@@ -319,7 +319,7 @@ namespace Player
 
             // Debug.Log(playTime);
 
-            int spawnDelay = 1; // milliSeconds
+            int spawnDelay = 10; // milliSeconds
             int spawnDelayTimer = 0;
 
             // 타이머 작동 방식에 대해 고민해볼 필요가 있음
@@ -332,7 +332,6 @@ namespace Player
 
                 if (spawnDelayTimer > 0)
                 {
-                    
                     spawnDelayTimer -= 1;
                 }
                 else
@@ -345,7 +344,7 @@ namespace Player
                     }
 
                     playerBodyClone.SetActive(true);
-                    playerBodyClone.transform.position = transform.position;
+                    playerBodyClone.transform.position = transform.position - (transform.forward / 2f);
                     playerBodyClone.transform.rotation = transform.rotation;
 
                     PlayerBodyClone bodyScript = playerBodyClone.GetComponent<PlayerBodyClone>();

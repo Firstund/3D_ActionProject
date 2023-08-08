@@ -86,6 +86,16 @@ namespace Player
             }
         }
 
+        [SerializeField]
+        private InAirCheckTrigger inAirCheckTrigger = null;
+        public InAirCheckTrigger InAirCheckTrigger
+        {
+            get
+            {
+                return inAirCheckTrigger;
+            }
+        }
+
         /// <summary>
         /// 플레이어의 몸체를 담당하는 오브젝트가 가지고있는 스크립트
         /// </summary>
@@ -224,14 +234,7 @@ namespace Player
                 return;
             }
 
-            Ray ray = default(Ray);
-
-            ray.origin = transform.position;
-            ray.direction = Vector3.down;
-
-            Debug.DrawRay(ray.origin, ray.direction * inAirRayDistance, Color.red, Time.deltaTime);
-
-            if (!Physics.Raycast(ray.origin, ray.direction, inAirRayDistance, floorLayerMask))
+            if (inAirCheckTrigger.IsInAIr)
             {
                 if(!(CurrentState == PlayerState.Jump || CurrentState == PlayerState.JumpAttack))
                 {

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Player
 {
     [RequireComponent(typeof(Player))]
-    public class PlayerMove : MonoBehaviour
+    public class PlayerMove : MonoBehaviour, IGravityTargetEntity
     {
         private Player player = null;
         private PlayerInput playerInput => player.PlayerInput;
@@ -87,7 +87,7 @@ namespace Player
             transform.position += moveValue;
         }
 
-        private void Gravity()
+        public void Gravity()
         {
             if (player.CurrentState == PlayerState.InAirIdle)
             {
