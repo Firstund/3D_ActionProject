@@ -747,17 +747,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6036642382100174316, guid: bf07a2d4d39561a409117bc3c6cb66bd, type: 3}
   m_PrefabInstance: {fileID: 6036642380695757958}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1436812680 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1436812680, guid: bf07a2d4d39561a409117bc3c6cb66bd, type: 3}
-  m_PrefabInstance: {fileID: 6036642380695757958}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 506b47ccc49e11448956d7055053d821, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1561587989
 GameObject:
   m_ObjectHideFlags: 3
@@ -913,10 +902,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1436812678, guid: bf07a2d4d39561a409117bc3c6cb66bd, type: 3}
-      propertyPath: m_Name
-      value: InAirCheckTrigger
-      objectReference: {fileID: 0}
     - target: {fileID: 6036642382100174304, guid: bf07a2d4d39561a409117bc3c6cb66bd, type: 3}
       propertyPath: m_Name
       value: Player
@@ -925,10 +910,6 @@ PrefabInstance:
       propertyPath: playerCamera
       value: 
       objectReference: {fileID: 1563443873}
-    - target: {fileID: 6036642382100174315, guid: bf07a2d4d39561a409117bc3c6cb66bd, type: 3}
-      propertyPath: inAirCheckTrigger
-      value: 
-      objectReference: {fileID: 1436812680}
     - target: {fileID: 6036642382100174316, guid: bf07a2d4d39561a409117bc3c6cb66bd, type: 3}
       propertyPath: m_RootOrder
       value: 2

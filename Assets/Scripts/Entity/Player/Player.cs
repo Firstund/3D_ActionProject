@@ -122,6 +122,16 @@ namespace Player
             }
         }
 
+        [SerializeField]
+        private EntityFloorCheck entityFloorCheck = null;
+        public EntityFloorCheck EntityFloorCheck
+        {
+            get
+            {
+                return entityFloorCheck;
+            }
+        }
+
         /// <summary>
         /// PlayerMove 스크립트
         /// </summary>
@@ -197,6 +207,15 @@ namespace Player
         {
             SetPlayerRot();
             CheckInAir();
+
+            if(currentState == PlayerState.Idle)
+            {
+                entityFloorCheck.CheckFloor = true;
+            }
+            else
+            {
+                entityFloorCheck.CheckFloor = false;
+            }
         }
 
         private void SetPlayerRot()

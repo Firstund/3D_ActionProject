@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1436812681}
   - component: {fileID: 1436812680}
   m_Layer: 3
-  m_Name: PlayerGravityTrigger
+  m_Name: InAirCheckTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -77,6 +77,7 @@ GameObject:
   - component: {fileID: 6036642382100174314}
   - component: {fileID: 6036642382100174317}
   - component: {fileID: 6036642382100174312}
+  - component: {fileID: 4298031751148569367}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -173,8 +174,10 @@ MonoBehaviour:
     sprintSpeed: 8
     jumpPower: 1
   playerCamera: {fileID: 0}
+  inAirCheckTrigger: {fileID: 1436812680}
   playerBody: {fileID: 6036642380971497266}
   playerBodyCloneObject: {fileID: 4989983546837302407, guid: 24178285060f60d4fac658e2c07e3381, type: 3}
+  entityFloorCheck: {fileID: 4298031751148569367}
   inAirRayDistance: 0.6
 --- !u!114 &6036642382100174314
 MonoBehaviour:
@@ -207,7 +210,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 670634c8f3dbedc4c95e3d2589a3c04e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravityTrigger: {fileID: 1436812680}
   gravityPower: 1
   jumpDuration: 1
 --- !u!114 &6036642382100174312
@@ -222,6 +224,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6275dd849b4804641a4076f0e1f70bf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4298031751148569367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6036642382100174304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17b16a17ef239c54380fa660243fa670, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myEntityLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  floorLayer:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1001 &1101143109452130222
 PrefabInstance:
   m_ObjectHideFlags: 0
