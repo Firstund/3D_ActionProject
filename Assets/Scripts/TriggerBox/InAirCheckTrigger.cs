@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,6 +18,34 @@ public class InAirCheckTrigger : MonoBehaviour
         }
     }
 
+    private Action<GameObject> onHitFloorEnter = default;
+    public Action<GameObject> OnHitFloorEnter
+    {
+        get
+        {
+            return onHitFloorEnter;
+        }
+
+        set
+        {
+            onHitFloorEnter = value;
+        }
+    }
+
+    private Action<GameObject> onHitFloorExit = default;
+    public Action<GameObject> OnHitFloorExit
+    {
+        get
+        {
+            return onHitFloorExit;
+        }
+
+        set
+        {
+            onHitFloorExit = value;
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (floorMask.CompareGameObjectLayer(other.gameObject))
@@ -24,6 +53,8 @@ public class InAirCheckTrigger : MonoBehaviour
             if (IsPlayerUnder(other.gameObject))
             {
                 hitFloorObjectList.Add(other.gameObject);
+
+                onHitFloorEnter?.Invoke(other.gameObject);
             }
         }
     }
@@ -33,6 +64,8 @@ public class InAirCheckTrigger : MonoBehaviour
         if (floorMask.CompareGameObjectLayer(other.gameObject))
         {
             hitFloorObjectList.Remove(other.gameObject);
+
+            onHitFloorExit?.Invoke(other.gameObject);
         }
     }
 

@@ -46,6 +46,7 @@ namespace Player
             if(player.GetCurrentState() == PlayerState.Attack)
             {
                 isAttack = true;
+                player.PlayerMove.IsMoveLock = true;
                 // attackTimer = attackTime;
 
                 onEndState = PlayerState.Idle;
@@ -54,6 +55,7 @@ namespace Player
 
                 playerBody.AttackPlay(() => {
                     isAttack = false;
+                    player.PlayerMove.IsMoveLock = false;
 
                     player.SetCurrentState(onEndState);
                 });
@@ -79,21 +81,23 @@ namespace Player
             }
             if(player.GetCurrentState() == PlayerState.JumpAttack)
             {
-                isAttack = true;
+                // jumpAttack 모션이 없어서 그런지 고장남, 임시 비활성화
+                // isAttack = true;
 
-                onEndState = PlayerState.Jump;
+                // onEndState = PlayerState.Jump;
 
-                playerBody.JumpAttackPlay(() =>{
-                    isAttack = false;
+                // playerBody.JumpAttackPlay(() =>{
+                //     isAttack = false;
 
-                    player.SetCurrentState(onEndState);
-                });
+                //     player.SetCurrentState(onEndState);
+                // });
 
                 Debug.Log("JumpAttack이야 임마!");
             }
             if(player.GetCurrentState() == PlayerState.SprintAttack)
             {
                 isAttack = true;
+                player.PlayerMove.IsSprintLock = true;
                 // attackTimer = attackTime;
 
                 onEndState = PlayerState.Sprint;
@@ -102,6 +106,7 @@ namespace Player
 
                 playerBody.SprintAttackPlay(() => {
                     isAttack = false;
+                    player.PlayerMove.IsSprintLock = false;
                     
                     player.SetCurrentState(onEndState);
                 });
