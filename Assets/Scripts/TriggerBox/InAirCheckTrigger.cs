@@ -4,11 +4,18 @@ using UnityEngine;
 
 public class InAirCheckTrigger : MonoBehaviour
 {
+    /// <summary>
+    /// 공중에 있는지 체크하는데 쓰이는 땅의 LayerMask
+    /// </summary>
     [SerializeField]
     private LayerMask floorMask = default;
 
     private List<GameObject> hitFloorObjectList = new();
 
+    /// <summary>
+    /// 공중에 있다고 Check됐다면 true
+    /// </summary>
+    /// <value></value>
     public bool IsInAIr
     {
         get
@@ -17,6 +24,10 @@ public class InAirCheckTrigger : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 바닥 Object와 충돌 후 해당 오브젝트가 조건에 맞으면 List에 추가
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
         if (floorMask.CompareGameObjectLayer(other.gameObject))
@@ -28,6 +39,10 @@ public class InAirCheckTrigger : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// List에 있던 바닥 Object를 List에서 제거함
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerExit(Collider other)
     {
         if (floorMask.CompareGameObjectLayer(other.gameObject))
@@ -36,6 +51,11 @@ public class InAirCheckTrigger : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 충돌한 바닥 Object가 Player 아래에 있는지 체크
+    /// </summary>
+    /// <param name="targetGameObject"></param>
+    /// <returns></returns>
     private bool IsPlayerUnder(GameObject targetGameObject)
     {
         bool result = false;

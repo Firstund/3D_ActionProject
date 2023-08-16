@@ -4,11 +4,22 @@ using UnityEngine;
 
 public class EntityFloorCheck : MonoBehaviour
 {
+    // 해당 Entity가 바닥 오브젝트 밑에 빠졌을 때 바닥 위로 Entity의 위치를 옮겨줌
+
+    /// <summary>
+    /// 내 Entity의 LayerMask
+    /// </summary>
     [SerializeField]
     private LayerMask myEntityLayer = default;
+    /// <summary>
+    /// 바닥 Entity의 LayerMask
+    /// </summary>
     [SerializeField]
     private LayerMask floorLayer = default;
 
+    /// <summary>
+    /// 바닥 오브젝트 밑에 빠졌는지 Check해야 하는 상태면 true
+    /// </summary>
     private bool checkFloor = false;
     public bool CheckFloor
     {
@@ -31,6 +42,9 @@ public class EntityFloorCheck : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Entity가 바닥 밑에 빠졌는지 체크 후 빠졌다면 Entity를 꺼내줌
+    /// </summary>
     private void FloorCheck()
     {
         Ray myEntityCheckRay = new Ray();
