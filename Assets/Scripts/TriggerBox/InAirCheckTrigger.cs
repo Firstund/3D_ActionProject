@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,6 +29,34 @@ public class InAirCheckTrigger : MonoBehaviour
     /// 바닥 Object와 충돌 후 해당 오브젝트가 조건에 맞으면 List에 추가
     /// </summary>
     /// <param name="other"></param>
+    private Action<GameObject> onHitFloorEnter = default;
+    public Action<GameObject> OnHitFloorEnter
+    {
+        get
+        {
+            return onHitFloorEnter;
+        }
+
+        set
+        {
+            onHitFloorEnter = value;
+        }
+    }
+
+    private Action<GameObject> onHitFloorExit = default;
+    public Action<GameObject> OnHitFloorExit
+    {
+        get
+        {
+            return onHitFloorExit;
+        }
+
+        set
+        {
+            onHitFloorExit = value;
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (floorMask.CompareGameObjectLayer(other.gameObject))
@@ -35,6 +64,8 @@ public class InAirCheckTrigger : MonoBehaviour
             if (IsPlayerUnder(other.gameObject))
             {
                 hitFloorObjectList.Add(other.gameObject);
+
+                onHitFloorEnter?.Invoke(other.gameObject);
             }
         }
     }
@@ -48,6 +79,8 @@ public class InAirCheckTrigger : MonoBehaviour
         if (floorMask.CompareGameObjectLayer(other.gameObject))
         {
             hitFloorObjectList.Remove(other.gameObject);
+
+            onHitFloorExit?.Invoke(other.gameObject);
         }
     }
 

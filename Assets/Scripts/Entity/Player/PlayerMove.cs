@@ -24,7 +24,10 @@ namespace Player
             }
         }
 
-        private Vector3 moveValue = Vector3.zero;
+        private Vector3 posMoveValue = Vector3.zero; // 점프, 이동 등 여러 포지션 이동 요소들의 계산에 영향을 받는 포지션 이동 값
+        private Vector3 prevPosMoveValue = Vector3.zero;
+        private Vector3 prevMoveValue = Vector3.zero; // Sprint, Move등의 단순한 이동에만 관련된 moveValue값의 이전 값을 담아줌
+
         private Vector3 prevJumpVector = Vector3.zero;
 
         private float fallenValue = 0f;
@@ -39,6 +42,41 @@ namespace Player
         private bool jumpTimerStart = false;
 
         private bool isJumping = false;     // 점프 중인지 여부
+        public bool IsJumping
+        {
+            get
+            {
+                return isJumping;
+            }
+        }
+
+        private bool isSprintLock = false; // Sprint Move 상태가 Lock되어야 하는 상태
+        public bool IsSprintLock
+        {
+            get
+            {
+                return isSprintLock;
+            }
+
+            set
+            {
+                isSprintLock = value;
+            }
+        }
+
+        private bool isMoveLock = false; // Move 상태가 Lock되어야 하는 상태
+        public bool IsMoveLock
+        {
+            get
+            {
+                return isMoveLock;
+            }
+
+            set
+            {
+                isMoveLock = value;
+            }
+        }
 
         private bool canChangeDirection = true;
         public bool CanChangeDirection
@@ -57,18 +95,18 @@ namespace Player
         private void Awake()
         {
             player = GetComponent<Player>();
-        }
 
-        void Start()
-        {
-
+            player.InAirCheckTrigger.OnHitFloorEnter += (obj) =>
+            {
+                OnJumpEnd();
+            };
         }
 
         void Update()
         {
             CheckJumpTimer();
 
-            moveValue = Vector3.zero;
+            posMoveValue = Vector3.zero;
 
             if (player.GetCurrentState() == PlayerState.Move || player.GetCurrentState() == PlayerState.Sprint || player.GetCurrentState() == PlayerState.Jump ||
                 /*player.GetCurrentState() == PlayerState.MoveAttack ||*/ player.GetCurrentState() == PlayerState.SprintAttack || player.GetCurrentState() == PlayerState.JumpAttack)
@@ -81,10 +119,23 @@ namespace Player
                 Jump();
 
             }
+            else if (isMoveLock || isSprintLock)
+            {
+                Move();
+            }
 
             Gravity();
 
-            transform.position += moveValue;
+            transform.position += posMoveValue;
+
+            if (posMoveValue == Vector3.zero)
+            {
+                Inertia();
+            }
+            else
+            {
+                prevPosMoveValue = posMoveValue;
+            }
         }
 
         public void Gravity()
@@ -93,13 +144,21 @@ namespace Player
             {
                 float gravityVec = Mathf.Sqrt((GameManager.Instance.AccelerationOfGravity * fallenValue) + GameManager.Instance.AccelerationOfGravity) * Time.deltaTime;
 
-                moveValue.y -= gravityVec;
+                posMoveValue.y -= gravityVec;
                 fallenValue += Mathf.Abs(gravityVec);
             }
             else
             {
                 fallenValue = 0f;
             }
+        }
+
+        private void Inertia()
+        {
+            // 관성을 구현하는 코드, 버그때문에 비활성화
+            // transform.position += prevPosMoveValue;
+
+            // prevPosMoveValue -= prevPosMoveValue.normalized;
         }
 
         /// <summary>
@@ -141,14 +200,27 @@ namespace Player
         {
             // Vector3 moveVec = Vector3.zero;
 
-            if (playerInput.GetKeyDict(PlayerKey.Sprint))
+            Vector3 moveValue = Vector3.zero;
+
+            if (isSprintLock)
             {
-                moveValue += currentMoveDirection * player.PlayerStats.sprintSpeed * Time.deltaTime;
+                moveValue = currentMoveDirection * player.PlayerStats.sprintSpeed * Time.deltaTime;
+            }
+            else if (isMoveLock)
+            {
+                moveValue = currentMoveDirection * player.PlayerStats.speed * Time.deltaTime;
+            }
+            else if (playerInput.GetKeyDict(PlayerKey.Sprint))
+            {
+                moveValue = currentMoveDirection * player.PlayerStats.sprintSpeed * Time.deltaTime;
             }
             else
             {
-                moveValue += currentMoveDirection * player.PlayerStats.speed * Time.deltaTime;
+                moveValue = currentMoveDirection * player.PlayerStats.speed * Time.deltaTime;
             }
+
+            prevMoveValue = moveValue;
+            posMoveValue += moveValue;
         }
 
         private void CheckJumpTimer()
@@ -159,10 +231,7 @@ namespace Player
 
                 if (jumpTimer <= 0f)
                 {
-                    isJumping = false;
-                    jumpTimerStart = false;
-
-                    player.SetCurrentState(PlayerState.Idle);
+                    OnJumpEnd();
                 }
             }
         }
@@ -176,7 +245,14 @@ namespace Player
                 jumpTimerStart = true;
                 jumpTimer = jumpDuration;
             }
+        }
 
+        private void OnJumpEnd()
+        {
+            isJumping = false;
+            jumpTimerStart = false;
+
+            player.SetCurrentState(PlayerState.Idle);
         }
 
         /// <summary>
@@ -196,7 +272,7 @@ namespace Player
                 Vector3 jumpDelta = jumpVector - prevJumpVector;
 
                 // Debug.Log(jumpVector);
-                moveValue += jumpDelta;
+                posMoveValue += jumpDelta;
 
                 prevJumpVector = jumpVector;
             }

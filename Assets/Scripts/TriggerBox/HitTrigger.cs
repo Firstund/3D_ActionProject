@@ -78,6 +78,11 @@ public class HitTrigger : MonoBehaviour
 
             IEntity targetEntity = collider.gameObject.GetComponent<IEntity>();
 
+            if(targetEntity == null)
+            {
+                return;
+            }
+
             if (isContinuousDamage)
             {
                 if(!continuouseDamageTimer.ContainsKey(targetEntity))
