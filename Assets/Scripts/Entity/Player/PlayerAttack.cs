@@ -13,6 +13,23 @@ namespace Player
 
         private PlayerState onEndState = default(PlayerState); // 공격이 끝났을 떄 어떤 State로 바뀌어야하는가
 
+        [SerializeField]
+        private HitTrigger playerHitTrigger = null; // Player가 사용하는 hitTrigger 스크립트를 담는 변수
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        public class ColliderStateValue{
+            public string key;
+            public int colliderIdx;
+            public bool enableValue;
+        }
+
+        [SerializeField]
+        private List<ColliderStateValue> colliderStateList = new();
+        [SerializeField]
+        private Dictionary<string, (int, bool)> colliderStateDict = new(); // string key값으로 특정 attackState의 이름이 들어간다. 
+                                                                           // state가 바뀌었을 때, 해당 attackState의 이름을 key값으로 가지는 (int, bool)값을 가져온다. 해당 값은 특정 collider의 enable 여부를 정해준다.
+
         private bool isAttack = false;
         public bool IsAttack
         {

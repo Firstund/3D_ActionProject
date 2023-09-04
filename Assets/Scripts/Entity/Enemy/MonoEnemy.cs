@@ -8,10 +8,10 @@ namespace Enemy
     [Serializable]
     public class EnemyStats
     {
-        public int hp = 10;
+        public float hp = 10;
 
-        public int ap = 2;
-        public int dp = 2;
+        public float ap = 2;
+        public float dp = 2;
     }
 
     public class MonoEnemy : MonoBehaviour, IEntity
@@ -24,7 +24,7 @@ namespace Enemy
         /// </summary>
         public virtual void Attack()
         {
-
+            
         }
         
         /// <summary>
@@ -33,7 +33,10 @@ namespace Enemy
         /// <param name="hitDamage"></param>
         public virtual void OnHit(float hitDamage)
         {
+            // 임시 공식
+            Debug.Log("적이 데미지를 받음. 받은 데미지: " + hitDamage);
 
+            enemyStats.hp -= hitDamage;
         }
 
         /// <summary>

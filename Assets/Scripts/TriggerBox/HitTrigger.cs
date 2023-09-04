@@ -58,8 +58,6 @@ public class HitTrigger : MonoBehaviour
         {
             hitTriggers[i].isTrigger = true;
         }
-
-        // hitTriggers[0].
     }
 
     void Update()
@@ -78,14 +76,14 @@ public class HitTrigger : MonoBehaviour
 
             IEntity targetEntity = collider.gameObject.GetComponent<IEntity>();
 
-            if(targetEntity == null)
+            if (targetEntity == null)
             {
                 return;
             }
 
             if (isContinuousDamage)
             {
-                if(!continuouseDamageTimer.ContainsKey(targetEntity))
+                if (!continuouseDamageTimer.ContainsKey(targetEntity))
                 {
                     // 처음 hit되는 Entity의 경우 시작 데미지 처리
                     targetEntity.OnHit(triggerOwnerEntity.GetDamage());
@@ -108,6 +106,22 @@ public class HitTrigger : MonoBehaviour
             IEntity targetEntity = collider.gameObject.GetComponent<IEntity>();
 
             inTriggerTargetEntities.Remove(targetEntity);
+        }
+    }
+
+    // 특정 index의 콜라이더의 enable 값을 설정
+    private void SetEnableCollider(params (int, bool)[] idxs)
+    {
+        for (int i = 0; i < idxs.Length; ++i)
+        {
+            try
+            {
+                hitTriggers[idxs[i].Item1].enabled = idxs[i].Item2;
+            }
+            catch
+            {
+                continue;
+            }
         }
     }
 
